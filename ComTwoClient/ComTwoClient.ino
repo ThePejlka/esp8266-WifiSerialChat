@@ -34,9 +34,6 @@ void setup() {
 
 }
 
-void sendmsg() {}
-void getmsg() {}
-
 void loop() {
 
   if  (Serial. available() != 0)

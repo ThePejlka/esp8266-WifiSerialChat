@@ -31,9 +31,6 @@ void setup() {
 
 }
 
-void sendmsg() {}
-void getmsg() {}
-
 void loop() {
 
   WiFiClient ComCli = ComOne.available();
@@ -47,7 +44,7 @@ void loop() {
       ComCli.print(serput);
       Serial.println("\n Waiting for input");
     }
-ComCli.flush();
+
     if (ComCli. available() > 0)
     {
       Serial.print("Message: ");
