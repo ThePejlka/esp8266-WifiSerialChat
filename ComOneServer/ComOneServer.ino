@@ -1,11 +1,11 @@
 #include <ESP8266WiFi.h>
 
-char ssid[] = "ssid";
-char password[] = "password";
+char ssid[] = "ssid";                //your wifi SSID
+char password[] = "password";        //your wifi password
 
 WiFiServer ComOne(20);
 IPAddress OneIP;
-
+WiFiClient Comcli;
 
 void setup() {
 
@@ -26,17 +26,17 @@ void setup() {
   Serial.print("Server started on:  ");
   OneIP = WiFi.localIP();
   Serial.println(OneIP);
-
   Serial.println("\n Waiting for input");
-
+  
+  
 }
 
 void loop() {
 
-  WiFiClient ComCli = ComOne.available();
+  WiFiClient ComCli= ComOne.available();                //searching for client
   
-  if (ComCli) {
-    if  (Serial. available() != 0)
+  while (ComCli) {
+    if  (Serial. available() != 0)                      //read anything I wrote, send it to client
     {
       String serput = Serial.readString();
       Serial.print("You wrote: ");
@@ -45,7 +45,7 @@ void loop() {
       Serial.println("\n Waiting for input");
     }
 
-    if (ComCli. available() > 0)
+    if (ComCli. available() > 0)                        //read new messages
     {
       Serial.print("Message: ");
       while  (ComCli. available() > 0)
@@ -53,7 +53,7 @@ void loop() {
         char msg = ComCli.read();
         Serial.print(msg);
       }
-      ComCli.flush();
+      ComCli.flush();                                   //erase unread messages
       Serial.println("\n Waiting for input");
     }
   }

@@ -1,10 +1,10 @@
 #include <ESP8266WiFi.h>
 
-char ssid[] = "ssid";
-char password[] = "password";
+char ssid[] = "ssid";                //your wifi SSID
+char password[] = "password";        //your wifi password
 
 WiFiClient ComTwo;
-IPAddress ofOneIP(10, 0, 0, 212); // Currently manual
+IPAddress ofOneIP(192, 168, 0, 101); // Currently manual
 
 void setup() {
 
@@ -14,7 +14,7 @@ void setup() {
 
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED)
+  while (WiFi.status() != WL_CONNECTED)        //connect to wifi
   {
     Serial.print(".");
     delay(1000);
@@ -24,7 +24,7 @@ void setup() {
 
   Serial.print("Connecting to server: ");
   Serial.print(ofOneIP);
-  while (!ComTwo.connect(ofOneIP, 20))
+  while (!ComTwo.connect(ofOneIP, 20))        //connect to server
   {
     Serial.print(".");
     delay(1000);
@@ -36,7 +36,7 @@ void setup() {
 
 void loop() {
 
-  if  (Serial. available() != 0)
+  if  (Serial. available() != 0)                      //read anything I wrote, send it to server
   {
     String cliput = Serial.readString();
     Serial.print("You wrote: ");
@@ -45,7 +45,7 @@ void loop() {
     Serial.println("\n Waiting for input");
   }
 
-  if (ComTwo. available() > 0)
+  if (ComTwo. available() > 0)                        //read new messages
   {
     Serial.print("Message: ");
     while  (ComTwo. available() > 0)
@@ -53,11 +53,11 @@ void loop() {
       char msg = ComTwo.read();
       Serial.print(msg);
     }
-    ComTwo.flush();
+    ComTwo.flush();                                  //erase unread messages
     Serial.println("\n Waiting for input");
   }
 
-  if (!ComTwo.connected())
+  if (!ComTwo.connected())                          //reconnect
   {
     ComTwo.connect(ofOneIP, 20);
   }
