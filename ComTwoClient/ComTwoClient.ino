@@ -1,10 +1,10 @@
 #include <ESP8266WiFi.h>
 
-char ssid[] = "ssid";                //your wifi SSID
-char password[] = "password";        //your wifi password
+char ssid[] = "espchat";  
+char password[] = "123456789";
 
 WiFiClient ComTwo;
-IPAddress ofOneIP(192, 168, 0, 101); // Currently manual
+IPAddress ofOneIP(10, 168, 4, 22);
 
 void setup() {
 
@@ -12,9 +12,9 @@ void setup() {
   Serial.print("Connecting to: ");
   Serial.print(ssid);
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password); //Connect to Wifi
 
-  while (WiFi.status() != WL_CONNECTED)        //connect to wifi
+  while (WiFi.status() != WL_CONNECTED) //Check if connected
   {
     Serial.print(".");
     delay(1000);
@@ -24,7 +24,7 @@ void setup() {
 
   Serial.print("Connecting to server: ");
   Serial.print(ofOneIP);
-  while (!ComTwo.connect(ofOneIP, 20))        //connect to server
+  while (!ComTwo.connect(ofOneIP, 20)) //Connect to server
   {
     Serial.print(".");
     delay(1000);
@@ -36,7 +36,7 @@ void setup() {
 
 void loop() {
 
-  if  (Serial. available() != 0)                      //read anything I wrote, send it to server
+  if  (Serial. available() != 0) //Read from Serial, send to client on Server
   {
     String cliput = Serial.readString();
     Serial.print("You wrote: ");
@@ -45,7 +45,7 @@ void loop() {
     Serial.println("\n Waiting for input");
   }
 
-  if (ComTwo. available() > 0)                        //read new messages
+  if (ComTwo. available() > 0) //Check for incoming messages
   {
     Serial.print("Message: ");
     while  (ComTwo. available() > 0)
@@ -53,11 +53,11 @@ void loop() {
       char msg = ComTwo.read();
       Serial.print(msg);
     }
-    ComTwo.flush();                                  //erase unread messages
+    ComTwo.flush(); //Flush to make sure nothing is left
     Serial.println("\n Waiting for input");
   }
 
-  if (!ComTwo.connected())                          //reconnect
+  if (!ComTwo.connected())                          //Client may get dissconnected after readingm check and connect again if necessary
   {
     ComTwo.connect(ofOneIP, 20);
   }

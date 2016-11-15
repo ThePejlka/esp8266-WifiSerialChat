@@ -1,42 +1,45 @@
 #include <ESP8266WiFi.h>
 
-char ssid[] = "ssid";                //your wifi SSID
-char password[] = "password";        //your wifi password
+char ssid[] = "espchat";
+char password[] = "123456789";
 
 WiFiServer ComOne(20);
-IPAddress OneIP;
-WiFiClient Comcli;
+
+IPAddress OneIP(10, 168, 4, 22);
+IPAddress gateway(10,1,1,1);
+IPAddress subnet(255,255,255,0);
 
 void setup() {
 
-  Serial.begin(115200);
-  Serial.print("Connecting to: ");
+  Serial.begin(115200) ;
+  
+  Serial.print("ssid : "); //Print WiFi info
   Serial.print(ssid);
+  Serial.print("\npassword: ");
+  Serial.print(password);
+  Serial.print("\nCreating Acces point.");
 
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED)
+  while (!WiFi.softAP(ssid, password)) //Create AP, check if created
   {
     Serial.print(".");
     delay(1000);
   }
-  Serial.println("\n Connected");
-
+  
+  WiFi.softAPConfig(OneIP, gateway, subnet); //Configure AP, mainly for IP
   ComOne.begin();
-  Serial.print("Server started on:  ");
-  OneIP = WiFi.localIP();
+  Serial.print("\nServer started on:  "); //Print IP
   Serial.println(OneIP);
+
   Serial.println("\n Waiting for input");
-  
-  
+
 }
 
 void loop() {
 
-  WiFiClient ComCli= ComOne.available();                //searching for client
-  
-  while (ComCli) {
-    if  (Serial. available() != 0)                      //read anything I wrote, send it to client
+  WiFiClient ComCli = ComOne.available(); 
+
+  while (ComCli) { 
+    if  (Serial. available() != 0) //Read from Serial, send to Client
     {
       String serput = Serial.readString();
       Serial.print("You wrote: ");
@@ -45,7 +48,7 @@ void loop() {
       Serial.println("\n Waiting for input");
     }
 
-    if (ComCli. available() > 0)                        //read new messages
+    if (ComCli. available() > 0) //Check for incoming messages
     {
       Serial.print("Message: ");
       while  (ComCli. available() > 0)
@@ -53,7 +56,7 @@ void loop() {
         char msg = ComCli.read();
         Serial.print(msg);
       }
-      ComCli.flush();                                   //erase unread messages
+      ComCli.flush(); //Flush to make sure nothing is left
       Serial.println("\n Waiting for input");
     }
   }
